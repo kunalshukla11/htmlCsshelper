@@ -3,18 +3,69 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Shopping List</title>
     <link rel="stylesheet" href="/dist/output.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+      integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
   </head>
-  <body
-    class="flex flex-col gap-4 [&>*]:mx-3 [&>*]:font-bold [&>*]:text-blue-950">
-    <header class="flex justify-center bg-slate-400 py-4">Header</header>
-    <div
-      class="flex h-[85vh] flex-col gap-4 md:flex-row [&>*]:items-center [&>*]:justify-center">
-      <div class="flex basis-1/12 bg-slate-400 py-6">Left</div>
-      <div class="flex basis-10/12 bg-slate-400 py-6">main</div>
-      <div class="flex basis-1/12 bg-slate-400 py-6">right</div>
+  <body class="bg-slate-100">
+    <div id="container" class="m-3 flex flex-col items-center justify-center">
+      <div id="header" class="m-3 flex w-full items-center justify-center px-4">
+        <img id="image" class="p-1" src="/src/images/note.png" />
+        <h1 id="title" class="ml-4 text-xl">Shopping List</h1>
+      </div>
+      <form id="item-form" class="mx-2 w-full max-w-md">
+        <div id="text-box ">
+          <input
+            type="text"
+            class="text-md w-full rounded-md p-1"
+            id="item-input"
+            name="item"
+            placeholder="Enter Item" />
+        </div>
+        <div class="form-control my-1">
+          <button
+            type="submit"
+            id="add-item"
+            class="rounded-md bg-black p-1 text-sm text-white hover:bg-gray-700">
+            <i class="fa-solid fa-plus"></i> Add Item
+          </button>
+        </div>
+      </form>
+      <div id="filter" class="my-2">
+        <input
+          type="text"
+          name="form-filter"
+          id="form-imput-filter"
+          placeholder="Filter Items"
+          class="border-b-2 bg-transparent outline-none" />
+      </div>
+      <ul
+        id="item-list"
+        class="flex w-full max-w-md flex-col [&>*]:m-2 [&>*]:rounded-md [&>*]:border [&>*]:border-gray-300 [&>*]:p-2">
+        <!-- <li class="flex w-full justify-between">
+          Apples
+          <button class="rounded-md text-red-700">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </li>
+        <li class="flex w-full justify-between">
+          Orange Juice
+          <button class="rounded-md text-red-700">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </li> -->
+      </ul>
+      <button
+        id="clear"
+        class="ml-5 w-full max-w-md items-center rounded-md border border-gray-700 p-2 hover:bg-gray-300">
+        Clear All
+      </button>
     </div>
-    <footer class="flex justify-center border bg-slate-400 py-4">footer</footer>
+    <script src="./sript.js"></script>
   </body>
 </html>

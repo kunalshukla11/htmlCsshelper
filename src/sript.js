@@ -5,6 +5,13 @@ const clearButton = document.getElementById('clear');
 const logo = document.getElementById('image');
 const filterBox = document.getElementById('form-imput-filter');
 
+function loadFromLocalStorage() {
+  let itemsFromStorage = getItemsFromLocalStorage();
+  if (itemsFromStorage.length > 0) {
+    itemsFromStorage.forEach((item) => addItemToDom(item));
+  }
+  checkUi();
+}
 function addItem(e) {
   e.preventDefault();
   let input = inputItem.value;
@@ -12,11 +19,34 @@ function addItem(e) {
     alert('Please input some value');
     return;
   }
-  itemList.appendChild(createListItem(input));
+  //add new  Item to doms
+
+  addItemToDom(input);
+  //add to local storage
+  addTolocalStorage(input);
   //check the ui
   checkUi();
   inputItem.value = '';
   console.log('success');
+}
+
+function addTolocalStorage(item) {
+  let itemsFromStorage = getItemsFromLocalStorage();
+
+  itemsFromStorage.push(item);
+
+  // Convert to JSON string and set to local storage
+  localStorage.setItem('items', JSON.stringify(itemsFromStorage));
+}
+
+function getItemsFromLocalStorage() {
+  let itemsFromStorage;
+  if (localStorage.getItem('items') === null) {
+    itemsFromStorage = [];
+  } else {
+    itemsFromStorage = JSON.parse(localStorage.getItem('items'));
+  }
+  return itemsFromStorage;
 }
 
 function createButton(classes) {
@@ -33,25 +63,37 @@ function createIcon(classes) {
   return crossItem;
 }
 
-function createListItem(item) {
+function addItemToDom(item) {
   const listItem = document.createElement('li');
   listItem.className = 'flex w-full justify-between';
   const textNode = document.createTextNode(item);
   listItem.appendChild(textNode);
   const button = createButton('rounded-md text-red-700');
   listItem.appendChild(button);
-  return listItem;
+  itemList.appendChild(listItem);
+  return;
 }
-function removeItem(e) {
+function onClickItem(e) {
   if (e.target.parentElement.classList.contains('text-red-700')) {
-    const button = e.target.parentElement;
-    const li = button.parentElement;
-    console.log(li);
-    if (confirm('Are you sure to delete?')) {
-      itemList.removeChild(li);
-      checkUi();
-    }
+    const item = e.target.parentElement.parentElement;
+    removeItem(item);
   }
+}
+function removeItem(item) {
+  if (confirm('Are you sure to delete?')) {
+    item.remove();
+    removeItemFromLocalStorage(item);
+    checkUi();
+  }
+}
+
+function removeItemFromLocalStorage(item) {
+  const itemValue = item.textContent;
+
+  let itemFromStorage = getItemsFromLocalStorage();
+
+  itemFromStorage = itemFromStorage.filter((i) => i !== itemValue);
+  localStorage.setItem('items', JSON.stringify(itemFromStorage));
 }
 
 function removeAllItems() {
@@ -60,6 +102,8 @@ function removeAllItems() {
   while (itemList.firstChild) {
     itemList.removeChild(itemList.firstChild);
   }
+  //clearing all items from local storage
+  localStorage.removeItem('items');
   checkUi();
 }
 
@@ -85,7 +129,7 @@ function filterElemets(e) {
   });
 }
 
-function checkUi() {
+function checkFilterAndClear() {
   if (itemList.getElementsByTagName('li').length === 0) {
     clearElement('form-imput-filter', true);
     clearElement('clear', true);
@@ -95,9 +139,17 @@ function checkUi() {
   }
 }
 
-form.addEventListener('submit', addItem);
-itemList.addEventListener('click', removeItem);
-clearButton.addEventListener('click', removeAllItems);
-filterBox.addEventListener('input', filterElemets);
+function checkUi() {
+  checkFilterAndClear();
+}
 
-checkUi();
+function init() {
+  form.addEventListener('submit', addItem);
+  itemList.addEventListener('click', onClickItem);
+  clearButton.addEventListener('click', removeAllItems);
+  filterBox.addEventListener('input', filterElemets);
+  document.addEventListener('DOMContentLoaded', loadFromLocalStorage);
+
+  checkUi();
+}
+init();

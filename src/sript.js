@@ -4,6 +4,8 @@ const itemList = document.getElementById('item-list');
 const clearButton = document.getElementById('clear');
 const logo = document.getElementById('image');
 const filterBox = document.getElementById('form-imput-filter');
+const formButton = form.querySelector('button');
+let editMode = false;
 
 function loadFromLocalStorage() {
   let itemsFromStorage = getItemsFromLocalStorage();
@@ -19,8 +21,19 @@ function addItem(e) {
     alert('Please input some value');
     return;
   }
-  //add new  Item to doms
+  if (editMode) {
+    const itemToEdit = itemList.querySelector('.text-orange-400');
+    removeItemFromLocalStorage(itemToEdit);
+    itemToEdit.remove();
+    editMode = false;
+  } else {
+    if (checkIfItemExists(input)) {
+      alert('Item already exists');
+      return;
+    }
+  }
 
+  //add new  Item to doms
   addItemToDom(input);
   //add to local storage
   addTolocalStorage(input);
@@ -77,7 +90,21 @@ function onClickItem(e) {
   if (e.target.parentElement.classList.contains('text-red-700')) {
     const item = e.target.parentElement.parentElement;
     removeItem(item);
+  } else {
+    setItemsToEdit(e.target);
+    console.log(1);
   }
+}
+
+function setItemsToEdit(item) {
+  editMode = true;
+  itemList
+    .querySelectorAll('li')
+    .forEach((item) => item.classList.remove('text-orange-400'));
+  item.classList.add('text-orange-400');
+  formButton.innerHTML = '<i class="fa-solid fa-pen"></i> Update Item';
+  formButton.classList.add('bg-green-500');
+  inputItem.value = item.textContent.trim();
 }
 function removeItem(item) {
   if (confirm('Are you sure to delete?')) {
@@ -137,6 +164,13 @@ function checkFilterAndClear() {
     clearElement('form-imput-filter', false);
     clearElement('clear', false);
   }
+  formButton.innerHTML = '<i class="fa-solid fa-pen"></i> Add Item';
+  formButton.classList.remove('bg-green-500');
+}
+
+function checkIfItemExists(item) {
+  const itemsFromStorage = getItemsFromLocalStorage();
+  return itemsFromStorage.includes(item);
 }
 
 function checkUi() {
